@@ -1,7 +1,8 @@
 // src/modules/admin/services/adminApi.js
-// Central Admin API with robust error handling + all helpers used across Admin UI
 
-const API_BASE = process.env.REACT_APP_API_BASE || '/api';
+// Build base like: `${REACT_APP_API_URL}/api` with no double slashes
+const root = (process.env.REACT_APP_API_URL || '').replace(/\/+$/, '');
+const API_BASE = (root || '') + '/api';
 
 async function apiHandler(promise) {
   const res = await promise;
@@ -130,7 +131,6 @@ export const getDonorProfileById = (id) =>
 /* =========================
    Audit logs
    ========================= */
-// GET /api/audit?entityType=&entityId=
 export const getAuditLogs = ({ entityType, entityId }) => {
   const params = new URLSearchParams();
   if (entityType) params.set('entityType', entityType);
@@ -141,9 +141,7 @@ export const getAuditLogs = ({ entityType, entityId }) => {
 /* =========================
    Reports (Summary / TAT)
    ========================= */
-// These endpoints are guesses based on common naming; adjust if your backend differs.
 export const getSummaryReport = (args = {}) => {
-  // Optional filters (date range, status, etc.) if your backend supports them
   const params = new URLSearchParams();
   for (const [k, v] of Object.entries(args)) {
     if (v != null && v !== '') params.set(k, v);
